@@ -1,6 +1,6 @@
-<!-- translated-from: README.md @ 951ef638bd8a -->
+<!-- translated-from: README.md @ 93a6222e8816 -->
 > [!IMPORTANT]
-> **Mika-root** は [Mika](https://github.com/wangzan101/Mika) の**非公式 ROOT 強化フォーク**で、[xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root) で管理されています。本フォークは**ソース優先**で、まだ APK をリリースしていません。root 機能をビルドまたは使用する前に [ROOT フォークの説明](../root-fork.md) をお読みください。以下のダウンロード、更新、コミュニティ、寄付のリンクは**上流の Mika** のもので、本フォークのものではありません。
+> **Mika-root** は [Mika](https://github.com/wangzan101/Mika) の**非公式 ROOT 強化フォーク**で、[xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root) で管理されています。最初の APK は**非公式の debug 署名付き ROOT プレビュー** [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) で、実運用リリースではありません。root 機能をインストールまたは使用する前に [ROOT フォークの説明](../root-fork.md) をお読みください。以下のダウンロード、更新、コミュニティ、寄付のリンクは**上流の Mika** のもので、本フォークのものではありません。
 
 <div align="center">
 

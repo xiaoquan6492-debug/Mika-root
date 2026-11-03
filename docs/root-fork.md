@@ -1,8 +1,8 @@
 # Mika-root: unofficial ROOT-enhanced fork
 
-**Status: source-first preview. This repository does not publish an APK Release yet.**
+**Status: debug-signed ROOT preview. The first fork release is [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1); it is not a stable or production release.**
 
-The English README and all five translated READMEs carry an equivalent fork/source-first banner. This
+The English README and all five translated READMEs carry an equivalent fork/debug-preview banner. This
 document remains the fork-specific source of truth.
 
 Mika-root is an **unofficial** fork of [Mika](https://github.com/wangzan101/Mika), maintained at
@@ -11,7 +11,7 @@ endorsed by, or supported by the upstream Mika author. The upstream project, its
 service, community channels and any donation links belong to upstream Mika, not to this fork.
 
 This document explains what the ROOT features do, what they do **not** protect, how the fork was assembled,
-and what must be true before anyone publishes a binary.
+and the limits of the debug preview binary.
 
 ## What is different
 
@@ -110,22 +110,26 @@ Available local evidence is limited:
 - The maintainer/user reports that real-device acceptance passed. **No public logs, screenshots, device
   identifiers, credentials, or independently witnessed test matrix are attached.** That statement is attributed
   to the maintainer/user, not to an independent verification performed by this repository.
-- No public APK Release, real-device install matrix, WebView matrix, or live model/API validation is claimed.
+- No real-device install matrix, WebView matrix, or live model/API validation is claimed. The debug preview APK is a development preview, not independently device-tested by this repository.
 
 ## Installation and signing warning
 
 The application ID is still **`com.wangzan101.mika`**, the upstream package ID. The checked-in Gradle
-configuration does not define a release signing identity; local debug/perf builds use the developer's local
-debug keystore, while an official upstream release is signed with a different key. Consequently:
+configuration does not define a release signing identity; the debug preview is built and signed with the
+developer's local debug keystore, while an official upstream release is signed with a different key. Its
+debug certificate SHA-256 is
+`1f74e23bf0d2f687afbce1c289b14c17120084ac280ef1ba31de92a179f95d6e`. This is an explicitly debuggable
+development preview, **not** production signing and **not** a production-security assurance. Consequently:
 
 - a debug build and the official app cannot be installed side by side under the same package ID;
 - a build signed with another key cannot update the official app, and uninstalling to "fix" a signature mismatch
   can destroy app data;
 - the inherited About › Check for updates path still points at the **upstream** `wangzan101/Mika` release API,
-  not this fork. It must not be assumed to offer a compatible fork build.
+  not this fork. Use this fork's Releases manually for fork previews and do not assume that upstream offers a
+  compatible fork build.
 
-A future fork distribution would need a deliberate, documented release-signing and update strategy. This
-source-first repository does not publish an APK or a Release tag yet.
+A production fork distribution would still need a deliberate, documented release-signing and update strategy.
+This preview does not provide one.
 
 ## Licensing and source availability
 
@@ -157,15 +161,17 @@ dependency closure with licenses and `make-vendor.py`; and preserved license/not
 is split into three ordered parts under
 [`third_party/corresponding-sources/0.1.34/`](../third_party/corresponding-sources/0.1.34/README.md).
 **These parts and hashes are included in this source tree.** After obtaining this checkout, reconstruct and
-verify the full archive using that README. This document does **not** claim independently witnessed public
-hosting or a legal guarantee, and no APK Release is part of this tree. No source-offer contact is invented here.
+verify the full archive using that README. The debug preview release page must carry the same reconstructed
+archive. This source tree contains no APK. This document does **not** claim independently witnessed public
+hosting or a legal guarantee. No source-offer contact is invented here.
 
 ## Upstream, community and donations
 
-Use upstream Mika for its releases, update service, issue tracker, community channels and any donation
-mechanism. This fork does not run a separate release, donation, or community program. The upstream links are
-kept in the README for attribution and convenience; they do **not** imply that this fork's code is the upstream
-project or that donations go to this fork.
+Use upstream Mika for its official releases, update service, issue tracker, community channels and any donation
+mechanism. The fork's separate distribution is limited to the manual debug ROOT preview named above; it is not
+a stable release program. This fork does not run a separate donation or community program. The upstream links
+are kept in the README for attribution and convenience; they do **not** imply that this fork's code is the
+upstream project or that donations go to this fork.
 
 Fork-specific ROOT integration bugs and questions belong in [this fork's Issues](https://github.com/xiaoquan6492-debug/Mika-root/issues), not in an upstream Mika support obligation. Official upstream releases, the update service, community channels and donations remain upstream.
 

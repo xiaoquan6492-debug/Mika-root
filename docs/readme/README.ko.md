@@ -1,6 +1,6 @@
-<!-- translated-from: README.md @ 951ef638bd8a -->
+<!-- translated-from: README.md @ 93a6222e8816 -->
 > [!IMPORTANT]
-> **Mika-root**는 [Mika](https://github.com/wangzan101/Mika)의 **비공식 ROOT 강화 포크**이며 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)에서 관리합니다. 이 포크는 **소스 우선**이며 아직 APK를 배포하지 않았습니다. root 기능을 빌드하거나 사용하기 전에 [ROOT 포크 안내](../root-fork.md)를 읽어 주세요. 아래 다운로드, 업데이트, 커뮤니티, 기부 링크는 **업스트림 Mika**의 것이며 이 포크의 것이 아닙니다.
+> **Mika-root**는 [Mika](https://github.com/wangzan101/Mika)의 **비공식 ROOT 강화 포크**이며 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)에서 관리합니다. 첫 APK는 **비공식 debug 서명 ROOT 미리 보기**인 [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1)이며 프로덕션 릴리스가 아닙니다. root 기능을 설치하거나 사용하기 전에 [ROOT 포크 안내](../root-fork.md)를 읽어 주세요. 아래 다운로드, 업데이트, 커뮤니티, 기부 링크는 **업스트림 Mika**의 것이며 이 포크의 것이 아닙니다.
 
 <div align="center">
 

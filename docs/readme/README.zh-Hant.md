@@ -1,6 +1,6 @@
-<!-- translated-from: README.md @ 951ef638bd8a -->
+<!-- translated-from: README.md @ 93a6222e8816 -->
 > [!IMPORTANT]
-> **Mika-root** 是 [Mika](https://github.com/wangzan101/Mika) 的**非官方 ROOT 增強分支**，維護倉庫為 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)。本分支採用**原始碼優先：這裡尚未發佈 APK**。在建置或使用 root 功能前，請閱讀 [ROOT 分支說明](../root-fork.zh-CN.md)。下方的下載、更新、社群與捐款連結仍屬於**上游 Mika**，不屬於本分支。
+> **Mika-root** 是 [Mika](https://github.com/wangzan101/Mika) 的**非官方 ROOT 增強分支**，維護倉庫為 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)。它的第一個 APK 是**非官方 debug 簽名 ROOT 預覽**，[v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1)，不是正式生產版。安裝或使用 root 功能前，請閱讀 [ROOT 分支說明](../root-fork.zh-CN.md)。下方的下載、更新、社群與捐款連結仍屬於**上游 Mika**，不屬於本分支。
 
 <div align="center">
 
