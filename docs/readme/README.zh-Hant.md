@@ -1,9 +1,12 @@
-<!-- translated-from: README.md @ 960f4051ce73 -->
+<!-- translated-from: README.md @ 951ef638bd8a -->
+> [!IMPORTANT]
+> **Mika-root** 是 [Mika](https://github.com/wangzan101/Mika) 的**非官方 ROOT 增強分支**，維護倉庫為 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)。本分支採用**原始碼優先：這裡尚未發佈 APK**。在建置或使用 root 功能前，請閱讀 [ROOT 分支說明](../root-fork.zh-CN.md)。下方的下載、更新、社群與捐款連結仍屬於**上游 Mika**，不屬於本分支。
+
 <div align="center">
 
-<img src="../media/logo.png" alt="Mika" width="88" />
+<img src="../media/logo.png" alt="Mika-root" width="88" />
 
-# Mika
+# Mika-root
 
 **你手機上的 AI 助理：說一句話，它替你操作 App、上網，把事情辦好。**
 

@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.action
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.run.Attendance
 import com.wangzan101.mika.core.run.RunOrigin
@@ -23,5 +25,14 @@ class ApprovalPolicyTest {
             val expected = if (origin == RunOrigin.Ui && attendance != Attendance.Unattended) Approval.Ask else Approval.Deny
             assertEquals("$origin $attendance $level payment", expected, ApprovalPolicy.decide(Risk(level, payment = true), run))
         }
+    }
+
+    @Test fun declaredAskAlsoNeedsTheUserAndIsDeniedWhenUnattended() {
+        val ask = com.wangzan101.mika.core.gate.ConfirmationRequest(
+            com.wangzan101.mika.core.risk.IrrevAction.other, "", "ls /data", null, "root",
+        )
+        assertEquals(Approval.Ask, ApprovalPolicy.decide(Risk(ActionRisk.Read, ask = ask), RunProvenance(RunOrigin.Ui, Attendance.Present)))
+        assertEquals(Approval.Deny, ApprovalPolicy.decide(Risk(ActionRisk.Read, ask = ask), RunProvenance(RunOrigin.Trigger, Attendance.Unattended)))
+        assertEquals(Approval.Deny, ApprovalPolicy.decide(Risk(ActionRisk.Read, ask = ask), RunProvenance(RunOrigin.Child, Attendance.Present)))
     }
 }

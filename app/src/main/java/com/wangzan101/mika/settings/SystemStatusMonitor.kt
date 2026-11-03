@@ -1,4 +1,6 @@
 package com.wangzan101.mika.settings
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import android.app.AppOpsManager
 import android.app.NotificationManager
@@ -89,6 +91,7 @@ class SystemStatusMonitor(context: Context, private val shell: BuiltinShellContr
         usbDebugging = DeveloperSettings.usbDebugging(app.contentResolver),
         restrictedSettings = restrictedSettings(),
         helperRestart = shell.restart,
+        rootStart = shell.rootStart,
     )
 
     private fun channelImportance(id: String): Int? =

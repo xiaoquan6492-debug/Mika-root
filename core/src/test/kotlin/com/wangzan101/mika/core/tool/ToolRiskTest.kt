@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.tool
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.gate.gateTargetOf
 import com.wangzan101.mika.core.risk.GateTarget
@@ -43,9 +45,13 @@ class ToolRiskTest {
     }
 
     @Test fun readCallsRefuseWhatTheOldListsRefused() = runTest {
-        val refused = oldWriting + oldSandbox + WEB_SCRIPT_TOOL + setOf("phone_find", "phone_collect", "phone_dialog", "phone_run", "phone_system_command", "schedule_task", "spawn_agent", "settings_set")
+        val refused = oldWriting + oldSandbox + WEB_SCRIPT_TOOL +
+            setOf("phone_find", "phone_collect", "phone_dialog", "phone_run", "phone_system_command", "schedule_task", "spawn_agent", "settings_set", "root_run_command")
         assertEquals(refused, allTools().filter { !it.readOnly }.map { it.name }.toSet())
-        val d = toolDispatcher(FakeScreen())
+        // root 命令只在给了端口时登记:给一个,所有工具都在
+        val d = toolDispatcher(FakeScreen(), root = object : com.wangzan101.mika.core.cap.root.RootPort {
+            override suspend fun run(command: String, timeoutMs: Long) = com.wangzan101.mika.core.cap.root.RootRun.Unavailable
+        })
         for (name in names) {
             val r = d.executeRead(Part.ToolCall("c", name, "{}")).content
             assertEquals(name, name in refused, r["error"] == JsonPrimitive("not_a_read"))

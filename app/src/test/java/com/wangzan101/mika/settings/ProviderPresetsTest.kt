@@ -1,4 +1,6 @@
 package com.wangzan101.mika.settings
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.i18n.ChineseTexts
 import com.wangzan101.mika.ui.AddForm
@@ -56,6 +58,15 @@ class ProviderPresetsTest {
         // 每个有地址、不是自己跑的预设都认得出自己
         ProviderPresets.all.filter { it.baseUrl.isNotEmpty() && !it.selfHosted }.forEach {
             assertEquals(it.label, ProviderPresets.forHost(it.baseUrl)?.label)
+        }
+    }
+
+    /** 预置的思考档位只来自官方文档:DeepSeek 的 reasoning_effort 可能值是 none/low/high/max(none 关思考),别名不预置。 */
+    @Test fun reasoningLevelsAreCuratedAndOfficialOnly() {
+        assertEquals(listOf("none", "low", "high", "max"), preset("DeepSeek").reasoningLevels)
+        // 没核实的店家一律不预置,界面上照旧不出档位(见 ReasoningOptions)
+        ProviderPresets.all.filter { it.label != "DeepSeek" }.forEach { p ->
+            assertEquals(p.label, emptyList<String>(), p.reasoningLevels)
         }
     }
 

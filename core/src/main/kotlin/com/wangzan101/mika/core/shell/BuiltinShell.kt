@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.shell
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import kotlinx.coroutines.flow.StateFlow
 
@@ -45,6 +47,14 @@ enum class BuiltinShellFailure(val defaultFix: BuiltinShellFix, val duringPairin
      * 再运行一次启动命令。不往无线调试引:有的手机根本没有能用的无线调试。
      */
     UsbHelperStopped(BuiltinShellFix.RunUsbCommand, duringPairing = false),
+    /** 打开了「用 root 启动」,su 却拒绝了:不再自己去问,等用户点重试(重试时 su 会再弹一次授权)。 */
+    RootDenied(BuiltinShellFix.Retry, duringPairing = false),
+    /** su 没回话(授权弹框没人点):同样等用户点重试。 */
+    RootNoAnswer(BuiltinShellFix.Retry, duringPairing = false),
+    /** 打开了「用 root 启动」,手机上却找不到 su 了(root 被去掉了):关掉这一项,或改用别的启动方式。 */
+    RootUnavailable(BuiltinShellFix.RePair, duringPairing = false),
+    /** su 答应了,却切不到 shell 身份:这种 su 起不了助手,改用无线调试或电脑。 */
+    RootNoShellUid(BuiltinShellFix.RePair, duringPairing = false),
     Unknown(BuiltinShellFix.Retry, duringPairing = false),
 }
 
@@ -74,6 +84,8 @@ enum class HelperRestart {
      * 有的手机没有能用的无线调试,只能走这条路,所以这时不提示去打开无线调试。
      */
     UsbCommand,
+    /** 打开了「用 root 启动」且 su 能用:Mika 自己经 su 再起,不用配对、不用电脑,手机重启后也自己恢复。 */
+    Root,
 }
 
 /** 找「使用配对码配对设备」窗口公布的配对端口(本机 mDNS)的结果。 */
@@ -94,8 +106,12 @@ interface BuiltinShellControl {
     /** 配对过无线调试(Mika 能自己经它起助手、跑命令)。助手也可能是电脑经 USB 起的,所以在运行不等于配对过。 */
     val paired: Boolean get() = status.value != BuiltinShellStatus.NotPaired
 
+    /** 用户打开了「用 root 启动」且此刻能用:看门狗先经 su 起助手(状态是正在连接时,界面说正在用 root 启动)。 */
+    val rootStart: Boolean get() = false
+
     /** 助手停了以后靠什么再起来(见 [HelperRestart])。 */
     val restart: HelperRestart get() = when {
+        rootStart -> HelperRestart.Root
         status.value == BuiltinShellStatus.Failed(BuiltinShellFailure.UsbHelperStopped) -> HelperRestart.UsbCommand
         paired -> HelperRestart.Wireless
         else -> HelperRestart.None

@@ -216,6 +216,26 @@ Good to know:
 
 ---
 
+## Rooted phone: start with root
+
+If the phone is rooted (has su), you can start the same built-in helper with root, without pairing or a computer. Mika shows this only when it finds su:
+
+1. In the setup wizard tap “This phone is rooted: start with root”, or open Settings › Phone control › Root and turn on “Use root to start the phone helper” (off by default).
+2. Allow Mika in the root manager prompt.
+3. Wait until Phone control says it is ready.
+
+Things to know:
+
+- **It comes back after a restart.** If the phone restarts and the helper stops, Mika starts it again with root by itself, with no pairing and no computer.
+- **The helper keeps the same limited identity.** A helper started with root still runs as the same restricted user (shell, uid 2000) as one started over Wireless debugging or a computer; root is only used to launch it, and the helper is never uid 0.
+- **A denial is not repeated.** If root is denied or nobody answers, Mika does not keep showing prompts; Settings explains it and you can tap Retry.
+- Some root managers hide su from normal apps. If this option does not appear, allow Mika in the root manager first.
+- Turn the switch off to stop using it; “Unpair” turns off both root switches.
+- **Root commands (optional, off by default):** the same group has “Allow Mika to run root commands”. When on, Mika can run a command as root only for a task that really needs it (for example another app’s private data or system files). Root commands can change or delete anything on the phone: in Ask mode, **every root command, including a read-only one,** first shows you the exact command and waits for one-time approval; a changed or expired approval is not reused. Only an explicitly autonomous, attended UI task may run without a prompt; unattended, non-UI, child and condition-check runs cannot use root. Leave it off unless needed.
+- An obvious su invocation in the regular System command tool is refused and pointed to the dedicated root tool. That is a narrow obvious-escalation hint, not a complete security sandbox; it cannot prevent every encoded or indirect shell bypass, and the root manager’s own grant and wider shell trust boundary still matter.
+
+---
+
 ## After setup
 
 - **Keep USB debugging on.** Turning it off stops phone control.

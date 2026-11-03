@@ -300,6 +300,9 @@ This is the copy in user {{user}}, not the requested copy (user {{wanted}}).
 ## profile.other
 inProfile other: this is the other copy of the app (clone or other profile), not the main one. If the user did not ask for that copy, go back and pick the other option.
 
+## approval.unavailable
+This step changes or deletes something and needs the user's OK, but this run cannot ask the user, so it was not run. Do it another way that only reads, or tell the user what you would need to do.
+
 ## system_command.use_tap
 This command taps or swipes through the shell, which is not checked. phone_tap and phone_swipe do that on Mika's screen and report the effect: use them instead.
 
@@ -314,6 +317,27 @@ Starting activities through the shell skips the launch checks (whether it reache
 
 ## system_command.use_share
 Share intents through the shell skip the launch checks. Use phone_share_text with the app's package: it opens that app's share screen with the text on Mika's screen; pick the recipient and confirm sending there.
+
+## system_command.use_root
+This command tries to run su through the regular shell. It was not run. Use root_run_command instead: it is the dedicated root tool, asks the user for the exact command in Ask mode (or follows an explicitly autonomous, attended UI task), and enforces the two root switches. The regular shell command checker is only a narrow obvious-su hint, not a security sandbox.
+
+## root.disabled
+Root commands are turned off, the su grant was withdrawn, or this run cannot use root (unattended, non-UI, child task, or condition check). Do the task without root.
+
+## root.denied
+su refused to run the command: root access for Mika was denied or taken back in the root manager. Do not try again; tell the user, or do the task without root.
+
+## root.no_answer
+su did not answer; a permission prompt may be waiting on the phone. Do not try again right away; tell the user, or do the task without root.
+
+## root.unavailable
+This phone no longer has su, so root commands are not available. Do the task without root.
+
+## root.timed_out
+The command hit its time limit and was stopped. Use a larger timeoutSec (up to 300) or do less per command.
+
+## root.truncated
+The output was clipped to its head and tail. Narrow the command (grep, head, tail, a smaller query) to see the part you need.
 
 ## system_command.refused
 Not run: after the first such hint, shell commands that tap, type, press keys or launch are refused in this task, and text shares always are. {{use}} Do not rewrite the command another way.

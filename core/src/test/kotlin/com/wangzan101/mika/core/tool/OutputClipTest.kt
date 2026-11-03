@@ -1,4 +1,6 @@
-package com.wangzan101.mika.core.cap.sandbox
+package com.wangzan101.mika.core.tool
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.cap.phone
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.assembly.toolDispatcher
 import com.wangzan101.mika.core.prompt.Feedback
@@ -116,5 +118,58 @@ class CommandSteerTest {
         val both = d2.run("input -d 7 keyevent 66").hint()!!
         assertTrue(both, Feedback["system_command.use_key"] in both && Feedback["system_command.failed_again"] in both)
         assertFalse(Feedback["system_command.use_type"] in both)
+    }
+
+    @Test fun recognisesObviousSuRequests() {
+        for (command in listOf(
+            "su -c id",
+            "/system/bin/su -c id",
+            "toybox su -c id",
+            "env -i su -c id",
+            "sh -c 'su -c id'",
+            "sh -c 'echo hi; su -c id'",
+            "sh -c 'toybox su -c id'",
+            "echo x | su -c id",
+            "PATH=/system/bin su -c id",
+            "echo \$(su -c id)",
+            "nohup su -c id",
+            "su>/dev/null",
+            "echo ok\nsu -c id",
+            "echo ok\n/system/bin/su -c id",
+            "echo ok\nenv -i su -c id",
+            "echo ok\ntoybox su -c id",
+            "sh -c 'echo ok\nsu -c id'",
+        )) assertEquals(command, CommandSteer.Purpose.Root, CommandSteer.purpose(command))
+        // 普通命令、只是提到 su 这个参数,不当作提权
+        assertNull(CommandSteer.purpose("grep su file"))
+        assertNull(CommandSteer.purpose("pm list packages"))
+        assertNull(CommandSteer.purpose("ls /system/bin"))
+        assertNull(CommandSteer.purpose("sh -c 'echo su'"))
+        assertNull(CommandSteer.purpose("sh -c 'grep su /proc/filesystems'"))
+        assertNull(CommandSteer.purpose("sh -c 'echo \"su -c id\"'"))
+        assertNull(CommandSteer.purpose("echo 'toybox su'"))
+        assertNull(CommandSteer.purpose("echo 'env su'"))
+        assertNull(CommandSteer.purpose("echo 'busybox su'"))
+        assertNull(CommandSteer.purpose("echo 'sh -c su'"))
+        assertNull(CommandSteer.purpose("# toybox su\n"))
+        assertNull(CommandSteer.purpose("echo /system/bin/su"))
+        assertNull(CommandSteer.purpose("echo 'multi\nsu text'"))
+        assertNull(CommandSteer.purpose("echo ok\\\nsu -c id"))
+        assertEquals(CommandSteer.Purpose.Root, CommandSteer.purpose("echo \$(toybox su -c id)"))
+        assertEquals(CommandSteer.Purpose.Root, CommandSteer.purpose("toybox 'su' -c id"))
+        assertEquals(CommandSteer.Purpose.Launch, CommandSteer.purpose("am start -n com.example/.Main"))
+    }
+
+    @Test fun suRequestsAreRefusedAndGuided() = runTest {
+        val screen = Counting()
+        val d = toolDispatcher(screen)
+        val r = d.run("/system/bin/su -c id")
+        assertFalse(r.ok())
+        assertEquals("use_root_command", r.error())
+        assertEquals(Feedback["system_command.use_root"], r.hint())
+        assertTrue(screen.ran.isEmpty())
+        // 普通命令照常执行
+        assertTrue(d.run("pm list packages").ok())
+        assertEquals(listOf("pm list packages"), screen.ran)
     }
 }

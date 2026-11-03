@@ -1,9 +1,12 @@
-<!-- translated-from: README.md @ 960f4051ce73 -->
+<!-- translated-from: README.md @ 951ef638bd8a -->
+> [!IMPORTANT]
+> **Mika-root** es un **fork no oficial de Mika con ROOT mejorado**, mantenido en [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root). Este fork da **prioridad al código fuente: todavía no publica un APK**. Lee las [notas del fork ROOT](../root-fork.md) antes de compilar o usar funciones root. Los enlaces de descarga, actualización, comunidad y donación de abajo pertenecen a **Mika upstream**, no a este fork.
+
 <div align="center">
 
-<img src="../media/logo.png" alt="Mika" width="88" />
+<img src="../media/logo.png" alt="Mika-root" width="88" />
 
-# Mika
+# Mika-root
 
 **Un asistente de IA en tu móvil: dile lo que necesitas y usará tus apps y la web hasta dejarlo hecho.**
 

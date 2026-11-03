@@ -1,4 +1,6 @@
 package com.wangzan101.mika.task
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.R
 import com.wangzan101.mika.i18n.tr
@@ -34,6 +36,8 @@ import com.wangzan101.mika.cap.phone.a11y.LazyPhoneScreen
 import com.wangzan101.mika.cap.phone.a11y.ScreenAccessibility
 import com.wangzan101.mika.cap.phone.a11y.PhoneUnavailable
 import com.wangzan101.mika.cap.phone.PhoneServices
+import com.wangzan101.mika.cap.phone.setup.RootShell
+import com.wangzan101.mika.cap.root.RootCommands
 import com.wangzan101.mika.cap.phone.a11y.launchableApps
 import com.wangzan101.mika.confirm.ConfirmationNotifier
 import com.wangzan101.mika.MikaApp
@@ -71,6 +75,7 @@ import com.wangzan101.mika.core.run.RunId
 import com.wangzan101.mika.core.run.RunSpec
 import com.wangzan101.mika.core.run.RunProvenance
 import com.wangzan101.mika.core.run.RunOrigin
+import com.wangzan101.mika.core.run.Attendance
 import com.wangzan101.mika.core.child.ChildAgentRunner
 import com.wangzan101.mika.core.run.RunInbox
 import com.wangzan101.mika.core.run.RunInput
@@ -770,7 +775,19 @@ class TaskRun(
                 personalSkills = memoryRuntime.skills(),
                 // 这个对话之前几轮的运行记录(只读;history_read 只认 runSpec 里这个对话的轮次)
                 runRecords = RunStore(service).reader(),
-                mcpServers = mcpEndpoints())
+                mcpServers = mcpEndpoints(),
+                // 只有有人 UI 任务、用户打开了 root 命令开关、su 还答应着才登记;实时开关/来源在 RootCommands 里每步再查
+                root = phoneServices.shellManager.root.takeIf {
+                    !conditionCheck && provenance.origin == RunOrigin.Ui && provenance.attendance == Attendance.Present && it.commandsAllowed()
+                }?.let { r ->
+                    RootCommands(
+                        su = RootShell::su,
+                        allowed = {
+                            provenance.origin == RunOrigin.Ui && provenance.attendance == Attendance.Present && r.commandsAllowed()
+                        },
+                        refused = { a -> if (a == null) r.suGone() else r.commandsDenied(a) },
+                    )
+                })
             dispatcher = tools
             val agent = AgentLoop(
                 model, tools,

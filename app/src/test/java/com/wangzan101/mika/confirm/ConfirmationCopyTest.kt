@@ -1,7 +1,10 @@
 package com.wangzan101.mika.confirm
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import org.junit.Rule
 import com.wangzan101.mika.i18n.ChineseTexts
+import com.wangzan101.mika.core.cap.root.ROOT_CONFIRM_APP
 import com.wangzan101.mika.core.gate.ConfirmationRequest
 import com.wangzan101.mika.core.risk.IrrevAction
 import org.junit.Assert.assertEquals
@@ -15,6 +18,9 @@ class ConfirmationCopyTest {
     private fun req(content: String = "明天见", amount: String? = null, action: IrrevAction = IrrevAction.send, target: String = "张三") =
         ConfirmationRequest(action, target, content, amount, "com.chat")
 
+    private fun rootReq(content: String) =
+        ConfirmationRequest(IrrevAction.other, "", content, null, ROOT_CONFIRM_APP, oneShot = true)
+
     @Test fun longContentEllipsized() {
         val long = "字".repeat(80)
         val body = ConfirmationCopy.body(req(content = long), "聊天")
@@ -23,6 +29,50 @@ class ConfirmationCopyTest {
         val odd = ConfirmationCopy.body(req(content = "  第一行\n第二行‮反向<b>粗</b>\u0007 ", target = " 张三\n"), "聊天")
         assertEquals("在 聊天 · 对象:张三 · 内容:第一行 第二行反向<b>粗</b>", odd)
         assertFalse(odd.contains('\n'))
+    }
+
+    @Test fun rootCommandKeepsMeaningfulNewlinesAndPunctuation() {
+        val command = "echo safe # comment\nrm /some/file"
+        val detail = ConfirmationCopy.detail(rootReq(command), "root")
+        assertTrue(detail, command in detail)
+        assertFalse(detail, "echo safe # comment rm" in detail)
+        val punctuation = "printf '%s  :·' \"a  b\""
+        assertTrue(ConfirmationCopy.detail(rootReq(punctuation), "root").contains(punctuation))
+    }
+
+    @Test fun rootCommandEscapesControlsWithoutLosingTheCommand() {
+        val command = "a\u0001b\u200Bc\u202Ed\u2028e\nf\\g\th"
+        val detail = ConfirmationCopy.detail(rootReq(command), "root")
+        assertTrue(detail, "\\u0001" in detail)
+        assertTrue(detail, "\\u200B" in detail)
+        assertTrue(detail, "\\u202E" in detail)
+        assertTrue(detail, "\\u2028" in detail)
+        assertTrue(detail, "f\\\\g" in detail)
+        assertTrue(detail, "\\t" in detail)
+        assertFalse(detail, "\u0001" in detail)
+        assertFalse(detail, "\u200B" in detail)
+        assertFalse(detail, "\u202E" in detail)
+    }
+
+    @Test fun rootCommandEscapesInvisibleUnicodeWhitespaceAndIgnorables() {
+        val detail = ConfirmationCopy.detail(rootReq("a\u034Fb\u00A0c\uFE0Fd\u200Be f"), "root")
+        assertTrue(detail, "\\u034F" in detail)
+        assertTrue(detail, "\\u00A0" in detail)
+        assertTrue(detail, "\\uFE0F" in detail)
+        assertTrue(detail, "\\u200B" in detail)
+        assertTrue(detail, "e f" in detail)
+        assertFalse(detail, "\u034F" in detail)
+        assertFalse(detail, "\u00A0" in detail)
+    }
+
+    @Test fun rootCommandDetailIsCompleteButSummaryMayBeShort() {
+        val long = "x".repeat(4000)
+        val detail = ConfirmationCopy.detail(rootReq(long), "root")
+        assertTrue(detail.endsWith(long))
+        assertFalse(detail.endsWith("…"))
+        val body = ConfirmationCopy.body(rootReq(long), "root")
+        assertTrue(body.endsWith("…"))
+        assertTrue(body.length < long.length)
     }
 
     // 修复 1 M1:字段里的分隔符、冒号、行分隔符和零宽字符造不出假的字段

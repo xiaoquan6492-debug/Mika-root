@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.gate
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.action.ConfirmChoice
 import com.wangzan101.mika.core.risk.IrrevAction
@@ -10,7 +12,10 @@ import kotlin.math.abs
 import com.wangzan101.mika.core.tool.Verb
 
 /** 模型申报的一次要花钱的操作;字段已去首尾空白、截短,界面上照此显示。[app] 是包名。 */
-data class ConfirmationRequest(val action: IrrevAction, val target: String, val content: String, val amount: String?, val app: String)
+data class ConfirmationRequest(val action: IrrevAction, val target: String, val content: String, val amount: String?, val app: String,
+    /** 每条都单独问、拒绝也不封住同类下一步(如 root 命令);默认按 App+动作记住拒绝。 */
+    val oneShot: Boolean = false,
+)
 
 sealed interface DeclareResult {
     /** 申报的 App 和前台不一致(或读不到前台),不交给用户。 */
@@ -63,7 +68,8 @@ class ConfirmationGate {
         val req = pending ?: return
         pending = null
         if (!choice.approved) {
-            declined += req.action to req.app
+            // root 命令每条单独问:拒绝一条不封住同一任务里的下一条
+            if (!req.oneShot) declined += req.action to req.app
             return
         }
         grant = Grant(req, step)
@@ -89,6 +95,20 @@ class ConfirmationGate {
             else -> return Permit.Allowed
         }
         return Permit.Mismatch(reason)
+    }
+
+    /**
+     * 不在屏上的一步(工具声明了要问,如 root 命令):同意的就是这一条,申报一字不差才放行。
+     * 有同意时不论结果都用掉它。
+     */
+    @Synchronized fun permitsExactly(ask: ConfirmationRequest, step: Int): Permit {
+        val g = grant ?: return Permit.NoGrant
+        grant = null
+        return when {
+            step - g.step > MAX_STEPS -> Permit.Mismatch("the approval expired ($MAX_STEPS steps)")
+            g.request != ask -> Permit.Mismatch("approved a different action than this one")
+            else -> Permit.Allowed
+        }
     }
 
     /** 读屏里一个带字的元素都没有(自绘界面、画布)。 */

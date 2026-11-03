@@ -1,9 +1,12 @@
-<!-- translated-from: README.md @ 960f4051ce73 -->
+<!-- translated-from: README.md @ 951ef638bd8a -->
+> [!IMPORTANT]
+> **Mika-root** は [Mika](https://github.com/wangzan101/Mika) の**非公式 ROOT 強化フォーク**で、[xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root) で管理されています。本フォークは**ソース優先**で、まだ APK をリリースしていません。root 機能をビルドまたは使用する前に [ROOT フォークの説明](../root-fork.md) をお読みください。以下のダウンロード、更新、コミュニティ、寄付のリンクは**上流の Mika** のもので、本フォークのものではありません。
+
 <div align="center">
 
-<img src="../media/logo.png" alt="Mika" width="88" />
+<img src="../media/logo.png" alt="Mika-root" width="88" />
 
-# Mika
+# Mika-root
 
 **スマホの中の AI アシスタント。ひと言伝えれば、アプリやウェブを操作して用事を片づけてくれます。**
 

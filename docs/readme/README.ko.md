@@ -1,9 +1,12 @@
-<!-- translated-from: README.md @ 960f4051ce73 -->
+<!-- translated-from: README.md @ 951ef638bd8a -->
+> [!IMPORTANT]
+> **Mika-root**는 [Mika](https://github.com/wangzan101/Mika)의 **비공식 ROOT 강화 포크**이며 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)에서 관리합니다. 이 포크는 **소스 우선**이며 아직 APK를 배포하지 않았습니다. root 기능을 빌드하거나 사용하기 전에 [ROOT 포크 안내](../root-fork.md)를 읽어 주세요. 아래 다운로드, 업데이트, 커뮤니티, 기부 링크는 **업스트림 Mika**의 것이며 이 포크의 것이 아닙니다.
+
 <div align="center">
 
-<img src="../media/logo.png" alt="Mika" width="88" />
+<img src="../media/logo.png" alt="Mika-root" width="88" />
 
-# Mika
+# Mika-root
 
 **휴대폰 속 AI 비서: 한마디만 하면 앱과 웹을 대신 조작해서 일을 끝내 줍니다.**
 

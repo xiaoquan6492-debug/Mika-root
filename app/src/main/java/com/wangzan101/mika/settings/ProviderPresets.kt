@@ -1,4 +1,6 @@
 package com.wangzan101.mika.settings
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.model.Capabilities
 import com.wangzan101.mika.core.model.PromptCaching
@@ -20,6 +22,11 @@ data class ProviderPreset(
     val sessionHeader: String? = null,
     val selfHosted: Boolean = false,
     val familyTokens: List<String> = emptyList(),
+    /**
+     * 这家官方文档写明的思考档位:列表接口不回档位时(OpenAI 兼容协议大多如此),界面上按它给可选档。
+     * 只填官方文档确认过的值,不猜;照服务商写明的顺序。
+     */
+    val reasoningLevels: List<String> = emptyList(),
 )
 
 object ProviderPresets {
@@ -41,7 +48,10 @@ object ProviderPresets {
     }
 
     val all: List<ProviderPreset> = listOf(
-        ProviderPreset("DeepSeek", ProviderConfig.Kind.OpenAiCompat, "https://api.deepseek.com", caps(), familyTokens = listOf("deepseek")),
+        // 思考档位按官方文档(create-chat-completion):reasoning_effort 可能的值是 none/low/high/max,
+        // none 关掉思考,其余开;省略时服务端默认 thinking 开。不填 minimal/medium/xhigh:官方说它们只是别名
+        ProviderPreset("DeepSeek", ProviderConfig.Kind.OpenAiCompat, "https://api.deepseek.com", caps(),
+            familyTokens = listOf("deepseek"), reasoningLevels = listOf("none", "low", "high", "max")),
         // 这家的 OpenAI 兼容接口上,不少模型(如 qwen3.5 系列)只有显式缓存:不标就从不复用
         ProviderPreset("通义千问", ProviderConfig.Kind.OpenAiCompat, "https://dashscope.aliyuncs.com/compatible-mode/v1", caps(caching = PromptCaching.Explicit), familyTokens = listOf("qwen")),
         ProviderPreset("Kimi", ProviderConfig.Kind.OpenAiCompat, "https://api.moonshot.cn/v1", caps(), familyTokens = listOf("kimi", "moonshot")),

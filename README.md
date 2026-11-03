@@ -1,8 +1,11 @@
+> [!IMPORTANT]
+> **Mika-root** is an **unofficial ROOT-enhanced fork** of [Mika](https://github.com/wangzan101/Mika), maintained at [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root). This fork is **source-first: no APK Release is published here yet**. Read the [ROOT fork notes](docs/root-fork.md) before building or using root features. Download, update, community and donation links below still belong to **upstream Mika**, not this fork.
+
 <div align="center">
 
-<img src="docs/media/logo.png" alt="Mika" width="88" />
+<img src="docs/media/logo.png" alt="Mika-root" width="88" />
 
-# Mika
+# Mika-root
 
 **An AI assistant on your phone: say what you need, and it works your apps and the web until it's done.**
 

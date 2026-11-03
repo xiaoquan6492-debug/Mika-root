@@ -21,3 +21,17 @@ CLAUDE.md
 __pycache__/
 *.py[cod]
 *.egg-info/
+
+# Local-only publication material and signing/credential files
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+*.aab
+*.idsig
+Orca编排功能使用说明.md
+PROJECT_ANALYSIS.zh-CN.md

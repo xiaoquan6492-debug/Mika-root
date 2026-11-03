@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR; see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement. -->
     <string name="tool_list_apps">List installed apps</string>
     <string name="tool_open_app">Open app</string>
     <string name="tool_share_text">Share text to app</string>
@@ -60,4 +61,5 @@
     <string name="tool_tap">Tap</string>
     <string name="tool_type">Type text</string>
     <string name="tool_clear">Clear field</string>
+    <string name="tool_root">Root command</string>
 </resources>

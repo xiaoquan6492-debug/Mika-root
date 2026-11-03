@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.action
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.prompt.Feedback
 import com.wangzan101.mika.core.guard.GuardVerdict
@@ -80,6 +82,12 @@ internal object Refusals {
             notRun(code, message) { hit?.let { put("action", it.action.name); put("matched", it.matched) } }
         }
         RefusalStyle.Code -> notRun(code, code)
+    }
+
+    /** 要用户同意的一步(不在屏上、工具声明要问的),这次运行却问不到人。 */
+    fun unavailable(): JsonObject = buildJsonObject {
+        put("ok", false); put("error", "approval_unavailable"); put("message", Feedback["approval.unavailable"])
+        put("executed", false); put("recoverable", false); put("counts_as_failure", false)
     }
 
     private fun required(hit: Irreversible) = buildJsonObject {

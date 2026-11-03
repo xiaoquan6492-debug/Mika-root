@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.shell
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.adb.AdbConnectionException
 import com.wangzan101.mika.core.adb.AdbKeyUnreadableException
@@ -53,6 +55,17 @@ class BuiltinShellEngineTest {
         var usb = false
         override fun usbStarted() = usb
         override fun setUsbStarted(on: Boolean) { usb = on }
+
+        var root = RootStart.Off
+        var rootLaunchAnswer: SuAnswer? = SuAnswer.Granted
+        var deliverOnRoot = true
+        override fun rootStart() = root
+        override suspend fun launchHelperAsRoot(): SuAnswer? {
+            calls += "root"
+            if (deliverOnRoot) helper.value = "root-binder"
+            return rootLaunchAnswer
+        }
+        override fun setRootAnswer(answer: SuAnswer?) { calls += "rootAnswer=${answer?.name}" }
     }
 
     private val platform = FakePlatform()
@@ -525,6 +538,26 @@ class BuiltinShellEngineTest {
         advanceUntilIdle()
         assertEquals(false, platform.usb)
         assertEquals(BuiltinShellStatus.NotPaired, e.status.value)
+    }
+
+    @Test
+    fun rootGrantedWithoutHandoffFallsBackAndWirelessEventRecovers() = runTest {
+        platform.pairedFlag = true
+        platform.root = RootStart.Ready
+        platform.rootLaunchAnswer = SuAnswer.Granted
+        platform.deliverOnRoot = false
+        platform.wireless = false
+        val e = engine(Backoff(maxAttempts = 1))
+        e.start()
+        advanceUntilIdle()
+        assertEquals(BuiltinShellStatus.WirelessDebuggingOff, e.status.value)
+        assertTrue(platform.calls.contains("root"))
+
+        platform.wireless = true
+        e.wirelessDebuggingChanged()
+        advanceUntilIdle()
+        assertEquals(BuiltinShellStatus.Running, e.status.value)
+        assertEquals(1, launches())
     }
 
     @Test

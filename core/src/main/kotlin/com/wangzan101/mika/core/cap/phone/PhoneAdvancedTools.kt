@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.cap.phone
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.model.Part
 import com.wangzan101.mika.core.observation.Untrusted
@@ -323,6 +325,11 @@ internal object PhoneCommand : PhoneTool {
         val command = a.str("command", max = 4_000)!!
         val phone = ctx.phone
         val purpose = CommandSteer.purpose(command)
+        // 常规 shell 里明显调 su:不在这里执行,统一引导到专用 root_run_command(开关关着时也这样回)
+        if (purpose == CommandSteer.Purpose.Root) return ToolExecution(buildJsonObject {
+            put("ok", false); put("error", "use_root_command")
+            put("hint", Feedback["system_command.use_root"])
+        })
         // 已提醒过还在用 shell 点、打字、按键、启动,或用 shell 分享文字:不执行,只说该用哪个工具
         if (CommandSteer.refuses(purpose, phone.commandSteered)) return ToolExecution(buildJsonObject {
             put("ok", false); put("error", "use_phone_tool")

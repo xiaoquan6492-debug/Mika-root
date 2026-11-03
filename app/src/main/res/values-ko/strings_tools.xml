@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR; see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement. -->
     <string name="tool_list_apps">설치된 앱 목록 보기</string>
     <string name="tool_open_app">앱 열기</string>
     <string name="tool_share_text">앱으로 텍스트 공유</string>
@@ -60,4 +61,5 @@
     <string name="tool_tap">탭</string>
     <string name="tool_type">텍스트 입력</string>
     <string name="tool_clear">입력란 지우기</string>
+    <string name="tool_root">root 명령</string>
 </resources>

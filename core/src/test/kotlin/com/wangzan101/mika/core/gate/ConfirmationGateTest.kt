@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.gate
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.risk.IrrevAction
 import com.wangzan101.mika.core.uistate.ScreenSnapshot
@@ -64,6 +66,33 @@ class ConfirmationGateTest {
         val g = approved(req(IrrevAction.send, "com.a"))
         g.reset()
         assertEquals(Permit.NoGrant, g.permits(hit(IrrevAction.send), chat(), 2))
+    }
+
+    /** root 命令这类不在屏上的申报:同意只放行一字不差的这一条,一次有效,过期/换命令都作废。 */
+    @Test fun exactAskIsSingleUseAndExact() {
+        val ask = ConfirmationRequest(IrrevAction.other, "", "ls -l /data", null, "root")
+        val g = ConfirmationGate()
+        assertEquals(DeclareResult.Pending, g.declare(ask, "root"))
+        g.decide(true, 1)
+        assertEquals(Permit.Allowed, g.permitsExactly(ask, 2))
+        assertEquals(Permit.NoGrant, g.permitsExactly(ask, 2))
+
+        val other = ConfirmationGate()
+        other.declare(ask, "root"); other.decide(true, 1)
+        assertTrue(other.permitsExactly(ask.copy(content = "rm /data"), 2) is Permit.Mismatch)
+        assertEquals(Permit.NoGrant, other.permitsExactly(ask, 2))
+
+        val expired = ConfirmationGate()
+        expired.declare(ask, "root"); expired.decide(true, 1)
+        assertTrue(expired.permitsExactly(ask, 1 + ConfirmationGate.MAX_STEPS + 1) is Permit.Mismatch)
+    }
+
+    @Test fun oneShotDenialDoesNotBlockTheNextAsk() {
+        val ask = ConfirmationRequest(IrrevAction.other, "", "ls -l /data", null, "root", oneShot = true)
+        val g = ConfirmationGate()
+        assertEquals(DeclareResult.Pending, g.declare(ask, "root"))
+        g.decide(false, 1)
+        assertEquals(DeclareResult.Pending, g.declare(ask.copy(content = "id -u"), "root"))
     }
 
     // C3:同意绑定申报内容

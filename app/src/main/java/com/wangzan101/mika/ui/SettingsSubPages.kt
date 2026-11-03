@@ -1,4 +1,6 @@
 package com.wangzan101.mika.ui
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.i18n.tr
 import com.wangzan101.mika.i18n.trPlural
@@ -80,7 +82,7 @@ fun PhoneOpsScreen(
                 ListRow(
                     MikaIcons.Link, PhoneSetupCopy.ROW_TITLE,
                     if (reconnect && helper is BuiltinShellStatus.Failed) PhoneSetupCopy.failure(helper.reason).title
-                    else PhoneSetupCopy.statusLine(helper, status.usbDebugging),
+                    else PhoneSetupCopy.statusLine(helper, status.usbDebugging, status.rootStart),
                     onClick = { onProblem(Problem.PhoneHelper(helper)) },
                 ) { if (reconnect) RowValue(PhoneSetupCopy.RECONNECT, ValueTone.Link) else RowValue(hText, hTone) }
             }
@@ -118,6 +120,8 @@ fun PhoneOpsScreen(
             }
             FooterNote(PhoneSetupCopy.usageNote(status.helperRestart))
         }
+        // 已 root 的手机:用 root 启动助手、允许 root 命令(找不到 su 时整组不显示)
+        RootSwitches(helperRow = status.sdkInt >= Prerequisites.MIN_SDK)
     }
     if (confirmUnpair) {
         AlertDialog(

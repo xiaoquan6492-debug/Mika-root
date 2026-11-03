@@ -1,6 +1,9 @@
 package com.wangzan101.mika.core.action
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.gate.ConfirmationGate
+import com.wangzan101.mika.core.gate.ConfirmationRequest
 import com.wangzan101.mika.core.risk.IrrevAction
 import com.wangzan101.mika.core.gate.Irreversible
 import com.wangzan101.mika.core.gate.IrreversibleDetector
@@ -12,6 +15,8 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import com.wangzan101.mika.core.tool.Verb
+import com.wangzan101.mika.core.run.Attendance
+import com.wangzan101.mika.core.run.RunOrigin
 import com.wangzan101.mika.core.run.RunProvenance
 
 /** 一次动作执行前的审批结论。 */
@@ -22,8 +27,11 @@ sealed interface Decision {
     data class Traced(val detail: String) : Decision
     /** 找不到点在哪个元素上,这一来源不盲点。 */
     data object Unresolved : Decision
-    /** 这一步要花钱,要用户这一次的同意,没有可用的。 */
-    data class Required(val hit: Irreversible) : Decision
+    /**
+     * 这一步要用户这一次的同意(花钱,或 [ask] 不为空时是工具声明要问的不在屏上的一步),没有可用的。
+     * 有 [ask] 时调用方能问人就当场问(见 [FollowUp.approve])。
+     */
+    data class Required(val hit: Irreversible, val ask: ConfirmationRequest? = null) : Decision
     /** 有同意,但和这一步对不上;那次同意已作废。 */
     data class Mismatch(val hit: Irreversible, val reason: String) : Decision
     /** 要花钱,本次运行却问不到手机旁的用户,直接拒绝。 */
@@ -58,6 +66,12 @@ class ConfirmDecision(
     /** 判定放在锁屏等待之后:按此刻重新读的一屏判。 */
     suspend fun judge(tool: String, args: JsonObject, origin: Origin): Decision {
         outwardSite = null
+        // root 命令的来源限制必须在自主早退之前生效:无人值守/非 UI/子任务/条件检查一律不做
+        if (tools.verb(tool) == Verb.RootCommand &&
+            (provenance.attendance != Attendance.Present || provenance.origin != RunOrigin.Ui)
+        ) {
+            return Decision.Denied(Irreversible(IrrevAction.other, "root command"))
+        }
         if (autonomous || approvals.autonomous()) {
             val target = tools.gateTarget(tool)
             if (IrreversibleDetector.needsCheck(target, args)) {
@@ -72,7 +86,7 @@ class ConfirmDecision(
         val aim = tools.interfaces.actionTarget(tools.declared(tool), args)
         val checked = aim.args
         if (ownApp(tool, args, aim.aimed)) return Decision.OwnApp
-        tools.approvalRisk(tool)?.let { declared ->
+        tools.approvalRisk(tool, checked)?.let { declared ->
             return approve(tool, checked, origin, null, declared, null, null, null) ?: Decision.Clear
         }
         if (confirmations == null && !policy.judgeWithoutGate) return Decision.Clear
@@ -111,8 +125,8 @@ class ConfirmDecision(
         typing: String?, seen: String?,
     ): Decision? {
         val policy = origin.policy
-        // 没命中不可逆判定的(工具自己声明的风险):按动作落在的元素记成「其他」
-        val asked = hit ?: Irreversible(IrrevAction.other,
+        // 没命中不可逆判定的(工具自己声明的风险):有申报按申报记,否则按动作落在的元素记成「其他」
+        val asked = hit ?: risk.ask?.let { Irreversible(it.action, it.content) } ?: Irreversible(IrrevAction.other,
             screen?.let { ClassifiedRisk.target(tools.verb(tool), checked, it) }?.name?.trim()?.takeIf { it.isNotEmpty() } ?: tool)
         // 对外、要花钱和没放行的都记下;界面上的改动不记
         fun audit(decision: String) {
@@ -123,9 +137,10 @@ class ConfirmDecision(
             Approval.Deny -> return Decision.Denied(asked).also { audit("denied") }
             Approval.Ask -> Unit
         }
-        val required = Decision.Required(asked)
+        val required = Decision.Required(asked, risk.ask)
         val gate = confirmations?.takeIf { policy.usesGrant } ?: return required.also { audit("required") }
-        return when (val p = gate.permits(asked, screen, origin.step, typing, listOfNotNull(seen))) {
+        val permit = risk.ask?.let { gate.permitsExactly(it, origin.step) } ?: gate.permits(asked, screen, origin.step, typing, listOfNotNull(seen))
+        return when (val p = permit) {
             Permit.Allowed -> null.also { audit("allowed") }
             Permit.NoGrant -> required.also { audit("required") }
             is Permit.Mismatch -> Decision.Mismatch(asked, p.reason).also { audit("mismatch") }

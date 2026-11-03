@@ -1,4 +1,6 @@
 package com.wangzan101.mika.ui
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.R
 import com.wangzan101.mika.i18n.tr
@@ -127,6 +129,11 @@ object StatusCopy {
                 // 电脑起的助手停了:标题照实说,下面一句说怎么再起
                 else if (st.reason == BuiltinShellFailure.UsbHelperStopped) BannerCopy(
                     PhoneSetupCopy.failure(st.reason).title, PhoneSetupCopy.failure(st.reason).body, tr(R.string.view),
+                )
+                // 「用 root 启动」用不了:标题说原因,下面一句说怎么办;拒绝、没回应的直接给重试
+                else if (st.reason in PhoneSetupCopy.ROOT_FAILURES) BannerCopy(
+                    PhoneSetupCopy.failure(st.reason).title, PhoneSetupCopy.failure(st.reason).body,
+                    if (PhoneSetupCopy.canReconnect(st)) PhoneSetupCopy.RECONNECT else tr(R.string.view),
                 )
                 else if (st.reason == BuiltinShellFailure.WifiNotAllowed) BannerCopy(
                     PhoneSetupCopy.failure(st.reason).title, PhoneSetupCopy.WIFI_NOT_ALLOWED_LINE, tr(R.string.heads_up_action),

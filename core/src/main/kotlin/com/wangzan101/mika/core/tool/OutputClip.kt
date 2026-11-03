@@ -1,6 +1,8 @@
-package com.wangzan101.mika.core.cap.sandbox
+package com.wangzan101.mika.core.tool
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
-/** 交给模型的命令输出:开头 + 结尾,中间写明省略了多少字。 */
+/** 交给模型的命令输出(沙箱、root 命令共用):开头 + 结尾,中间写明省略了多少字。 */
 object OutputClip {
     fun clip(s: String, head: Int = 4000, tail: Int = 12000): Pair<String, Boolean> {
         if (s.length <= head + tail) return s to false

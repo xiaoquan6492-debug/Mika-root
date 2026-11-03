@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.agent
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.trace.RunTrace
 import com.wangzan101.mika.core.guard.OperationGuards
@@ -22,6 +24,7 @@ import com.wangzan101.mika.core.action.Refusals
 import com.wangzan101.mika.core.access.AppAccessDenied
 import com.wangzan101.mika.core.model.Author
 import com.wangzan101.mika.core.gate.ConfirmationGate
+import com.wangzan101.mika.core.gate.ConfirmationRequest
 import com.wangzan101.mika.core.knowledge.ChannelAdvisor
 import com.wangzan101.mika.core.knowledge.ChannelFacts
 import com.wangzan101.mika.core.knowledge.KnowledgeEntry
@@ -644,6 +647,10 @@ class AgentLoop(
                     history += Message(Role.Tool, listOf(Part.ToolResult(first.id, content.toString(), isError = true)) + skipped, Author.Mika)
                     recordReply(Redactor.args(tools.verb(first.name), first.argsJson, secretField = true))
                 }
+
+                // 不在屏上、要问的一步(会改动东西的 root 命令):用和付款同一张确认卡片当场问,申报就是这一步本身
+                override suspend fun approve(request: ConfirmationRequest): ToolExecution =
+                    user.confirm(Outcome.Confirm(request, request.app), step, running)
             })
             val ran = when (action) {
                 is ActionOutcome.Cancelled -> return TaskState.Cancelled

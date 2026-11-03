@@ -1,4 +1,6 @@
 package com.wangzan101.mika.ui
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import org.junit.Rule
 import com.wangzan101.mika.i18n.ChineseTexts
@@ -72,7 +74,10 @@ class PhoneSetupCopyTest {
     fun reconnectOnlyWhenRetryingIsTheFix() {
         val reconnectable = statuses.filter { PhoneSetupCopy.canReconnect(it) }
         assertEquals(
-            listOf(BuiltinShellFailure.ConnectFailed, BuiltinShellFailure.HelperStartFailed, BuiltinShellFailure.Unknown),
+            listOf(
+                BuiltinShellFailure.ConnectFailed, BuiltinShellFailure.HelperStartFailed,
+                BuiltinShellFailure.RootDenied, BuiltinShellFailure.RootNoAnswer, BuiltinShellFailure.Unknown,
+            ),
             reconnectable.map { (it as BuiltinShellStatus.Failed).reason },
         )
         reconnectable.forEach { s ->

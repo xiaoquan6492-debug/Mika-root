@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR; see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement. -->
     <string name="tool_list_apps">查看已装的 App</string>
     <string name="tool_open_app">打开 App</string>
     <string name="tool_share_text">分享文字到 App</string>
@@ -60,4 +61,5 @@
     <string name="tool_tap">点击</string>
     <string name="tool_type">输入文字</string>
     <string name="tool_clear">清空输入框</string>
+    <string name="tool_root">root 命令</string>
 </resources>

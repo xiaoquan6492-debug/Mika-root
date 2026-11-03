@@ -1,4 +1,6 @@
 package com.wangzan101.mika.core.shell
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -457,5 +459,14 @@ class PhoneSetupFlowTest {
         assertFalse(PhoneSetupFlow.unavailable(noWay.copy(restart = HelperRestart.UsbCommand)))
         assertFalse(PhoneSetupFlow.unavailable(noWay.copy(restart = HelperRestart.Wireless)))
         assertTrue(PhoneSetupFlow.unavailable(true, true, BuiltinShellStatus.NotPaired, HelperRestart.None))
+    }
+
+    @Test
+    fun aRootedPhoneHasAWayEvenWithoutDeveloperOptions() {
+        // 找得到 su 时用 root 起助手,不经过开发者选项:照常给清单,下面有「用 root 启动」
+        val v = PhoneSetupFlow.view(noWay.copy(rootAvailable = true))
+        assertEquals(SetupPhase.Guide, v.phase)
+        assertFalse(PhoneSetupFlow.unavailable(noWay.copy(rootAvailable = true)))
+        assertFalse(PhoneSetupFlow.unavailable(true, true, BuiltinShellStatus.NotPaired, HelperRestart.None, rootAvailable = true))
     }
 }

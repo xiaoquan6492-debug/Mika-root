@@ -1,10 +1,15 @@
 package com.wangzan101.mika.core.assembly
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.core.agent.CoreSections
 import com.wangzan101.mika.core.agent.DO_STEPS_TOOL
 import com.wangzan101.mika.core.cap.phone.AppPacing
 import com.wangzan101.mika.core.cap.phone.PHONE
 import com.wangzan101.mika.core.cap.phone.PhoneCapability
+import com.wangzan101.mika.core.cap.root.RootCapability
+import com.wangzan101.mika.core.cap.root.RootGroup
+import com.wangzan101.mika.core.cap.root.RootPort
 import com.wangzan101.mika.core.cap.sandbox.SandboxCapability
 import com.wangzan101.mika.core.cap.sandbox.SANDBOX
 import com.wangzan101.mika.core.cap.sandbox.SandboxGroup
@@ -34,6 +39,8 @@ import com.wangzan101.mika.core.vision.ImageOps
 import com.wangzan101.mika.core.vision.VisionService
 import com.wangzan101.mika.core.workspace.WorkspacePathCheck
 import com.wangzan101.mika.core.run.RunId
+import com.wangzan101.mika.core.run.Attendance
+import com.wangzan101.mika.core.run.RunOrigin
 import com.wangzan101.mika.core.run.RunSpec
 import com.wangzan101.mika.core.trigger.Scheduled
 import com.wangzan101.mika.core.trigger.TriggerDefinition
@@ -115,6 +122,8 @@ fun toolDispatcher(
     selfConfig: com.wangzan101.mika.core.settings.SelfConfig? = null,
     /** 存下的运行记录;给了、而这个对话之前有记过运行的轮次时提供 history_read(查之前几轮读到的东西)。 */
     runRecords: RunRecords? = null,
+    /** 以 root 跑命令(已 root 的手机上用户打开了「允许 Mika 执行 root 命令」才给);为空时 root 工具不登记。 */
+    root: RootPort? = null,
 ): ToolDispatcher {
     val config = ToolConfig(visionEnabled, skills, recordFrames, vision, inlineScreen, adaptiveVision, memory, profile, utterances, conversationId,
         imageOps, scheduleTrigger, scheduleAdmin, runSpec, childHost, userScreens, personalSkills, selfConfig, runRecords)
@@ -132,9 +141,22 @@ fun toolDispatcher(
             override fun open(spec: RunSpec) = SandboxCapability(sandbox, workspace, visionEnabled,
                 onSandboxCommand, onSandboxProgress, onSandboxPreparing, onSandboxScript)
         },
-    ) + mcpServers.map(::McpClientProvider)
+    ) + listOfNotNull(root?.let { port ->
+        object : CapabilityProvider {
+            override val id = RootCapability.KEY.name
+            // 连 prompt/工具都不暴露:来源限制不能只靠调用方记得先筛选
+            override fun open(spec: RunSpec) = if (rootAllowed(spec)) RootCapability(port) else null
+        }
+    }) + mcpServers.map(::McpClientProvider)
     return RunAssembler(providers).assemble(runSpec, config, stableRefs, FORMER_PREFIX, RENAMED, RETIRED, MOVED)
 }
+
+/** root 命令只属于有人看着的 UI 任务:无人值守/非 UI/子任务/条件只读运行连能力都不打开。 */
+private fun rootAllowed(spec: RunSpec): Boolean =
+    spec.provenance.origin == RunOrigin.Ui &&
+        spec.provenance.attendance == Attendance.Present &&
+        !spec.readOnly && spec.parent == null &&
+        (spec.capabilities == null || RootCapability.KEY.name in spec.capabilities)
 
 /** 改名前各能力工具名的前缀:手机的没有前缀,网页的是 browser_。 */
 private val FORMER_PREFIX = mapOf(PHONE to "", WEB to "browser_")
@@ -178,7 +200,7 @@ fun recordedTools(): ToolIndex = legacyNames().let { legacy -> ToolIndex(allTool
 
 /** Mika 所有可能提供的工具,按发给模型的顺序。 */
 internal fun allTools(): List<AgentTool> =
-    GeneralGroup.tools + PhoneCapability.tools() + WebGroup.tools + SandboxGroup.tools
+    GeneralGroup.tools + PhoneCapability.tools() + WebGroup.tools + SandboxGroup.tools + RootGroup.tools
 
 /** Mika 所有可能提供的工具的声明。 */
 fun knownTools(): ToolIndex = ToolIndex(allTools())

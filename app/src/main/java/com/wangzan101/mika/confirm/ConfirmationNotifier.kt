@@ -1,5 +1,8 @@
 package com.wangzan101.mika.confirm
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
+import com.wangzan101.mika.core.cap.root.ROOT_CONFIRM_APP
 import com.wangzan101.mika.i18n.tr
 import android.app.Notification
 import android.app.PendingIntent
@@ -36,15 +39,27 @@ object ConfirmationCopy {
         IrrevAction.other -> tr(R.string.confirm_other)
     }
 
-    fun title(r: ConfirmationRequest) = tr(R.string.confirm_title, actionLabel(r.action))
+    /** root 命令不在哪个 App 里:卡片标题说是 root 命令,「在哪里」说整部手机,命令整条显示。 */
+    private fun root(r: ConfirmationRequest) = r.app == ROOT_CONFIRM_APP
+
+    fun title(r: ConfirmationRequest) = tr(R.string.confirm_title, if (root(r)) tr(R.string.confirm_root) else actionLabel(r.action))
 
     /** 收起的一行:「在 <App 名> · 对象:<对谁> · 内容:<前 60 字> · 金额:<多少>」;空的字段不写。 */
     fun body(r: ConfirmationRequest, appName: String): String = fields(r, appName, CONTENT_MAX).joinToString(" · ")
 
-    /** 展开的卡片和通知大字:一行一个字段,内容显示完整(最多 200 字)。 */
-    fun detail(r: ConfirmationRequest, appName: String): String = fields(r, appName, DETAIL_MAX).joinToString("\n")
+    /** 展开的卡片和通知大字:一行一个字段,内容显示完整(root 命令不截断,最多 200 字以外的旧上限不适用)。 */
+    fun detail(r: ConfirmationRequest, appName: String): String = fields(r, appName, if (root(r)) Int.MAX_VALUE else DETAIL_MAX).joinToString("\n")
 
     private fun fields(r: ConfirmationRequest, appName: String, contentMax: Int): List<String> {
+        // root 命令不是模型写的自然语言,而是用户要批准的实际 shell 文本:保留换行、空白和标点,
+        // 控制/方向/零宽字符显式转义;不能像付款字段那样压平,否则注释后的危险命令会被藏起来。
+        if (root(r)) {
+            val content = exact(r.content).let { if (it.length > contentMax) it.take(contentMax) + "…" else it }
+            return listOfNotNull(
+                tr(R.string.confirm_in_app, tr(R.string.confirm_root_where)),
+                content.takeIf { it.isNotEmpty() }?.let { tr(R.string.confirm_content, it) },
+            )
+        }
         val content = plain(r.content).let { if (it.length > contentMax) it.take(contentMax) + "…" else it }
         return listOfNotNull(
             tr(R.string.confirm_in_app, plain(appName)),
@@ -61,6 +76,33 @@ object ConfirmationCopy {
         .filterNot { Character.isISOControl(it) }
         .replace('·', '/').replace(':', '∶').replace('：', '∶')
         .trim()
+
+    /** 实际命令的无损展示:保留空格、标点和换行;反斜杠和控制/格式字符写成无歧义转义。 */
+    private fun exact(s: String): String = buildString(s.length) {
+        for (ch in s) {
+            when {
+                ch == '\n' -> append('\n')
+                ch == '\r' -> append("\\r")
+                ch == '\t' -> append("\\t")
+                ch == '\\' -> append("\\\\")
+                invisible(ch) -> {
+                    append("\\u").append(ch.code.toString(16).uppercase().padStart(4, '0'))
+                }
+                else -> append(ch)
+            }
+        }
+    }
+
+    /** 除普通 ASCII 空格和 LF 外,不可见/误导性的字符都显式转义。 */
+    private fun invisible(ch: Char): Boolean = when {
+        ch == ' ' || ch == '\n' -> false
+        Character.isISOControl(ch) -> true
+        Character.getType(ch).toInt() == Character.FORMAT.toInt() -> true
+        Character.isSpaceChar(ch) || Character.isWhitespace(ch) -> true
+        Character.isIdentifierIgnorable(ch) -> true
+        ch == '\u034F' || ch.code in 0xFE00..0xFE0F -> true
+        else -> false
+    }
 }
 
 /** 确认关卡的醒目通知:和接管同一个高优先级频道,按钮「同意」「不同意」。 */
@@ -68,8 +110,8 @@ object ConfirmationNotifier {
     /** 通知按钮和卡片按钮带上它,服务据此丢掉点在旧通知、旧卡片上的回答。 */
     const val EXTRA_REQUEST = "confirmation_request"
 
-    /** App 的显示名;读不到(没装、包不可见)时用包名。 */
-    fun appLabel(context: Context, packageName: String): String = try {
+    /** App 的显示名;root 命令显示「整部手机」;读不到(没装、包不可见)时用包名。 */
+    fun appLabel(context: Context, packageName: String): String = if (packageName == ROOT_CONFIRM_APP) tr(R.string.confirm_root_where) else try {
         val pm = context.packageManager
         pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString().ifBlank { packageName }
     } catch (_: PackageManager.NameNotFoundException) {

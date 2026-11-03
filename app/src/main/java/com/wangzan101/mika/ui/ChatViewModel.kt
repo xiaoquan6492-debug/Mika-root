@@ -1,4 +1,6 @@
 package com.wangzan101.mika.ui
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import com.wangzan101.mika.R
 import com.wangzan101.mika.cap.web.KeptPage
@@ -1456,6 +1458,7 @@ class ToolLabels(private val tools: ToolIndex, private val legacy: LegacyNames =
             "检查弹窗" to R.string.tool_check_dialog,
             "多点手势" to R.string.tool_gesture,
             "系统命令" to R.string.tool_shell,
+            "root 命令" to R.string.tool_root,
             "查找界面控件" to R.string.tool_find_element,
             "采集多屏内容" to R.string.tool_collect,
             "连续操作手机" to R.string.tool_phone_run,

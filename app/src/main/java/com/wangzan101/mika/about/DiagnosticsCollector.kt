@@ -1,4 +1,6 @@
 package com.wangzan101.mika.about
+// Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR;
+// see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement.
 
 import android.app.NotificationManager
 import android.content.Context
@@ -41,6 +43,7 @@ fun SystemStatus.setupInputs(
     revisit: SetupStep? = null,
     stalledMs: Long = 0L,
     usbAsked: Boolean = false,
+    rootAvailable: Boolean = false,
 ) = SetupInputs(
     developerOptions = developerOptions, wirelessDebugging = wirelessDebugging,
     status = builtinShell, discovery = discovery, notificationsAllowed = notificationsAllowed,
@@ -50,6 +53,7 @@ fun SystemStatus.setupInputs(
     confirmed = confirmed, revisit = revisit,
     wirelessMissing = wirelessDebuggingMissing, stalledMs = stalledMs, usbAsked = usbAsked,
     restart = helperRestart, developerSettingsMissing = developerSettingsMissing,
+    rootAvailable = rootAvailable,
 )
 
 /**
@@ -62,7 +66,10 @@ object DiagnosticsCollector {
     fun collect(context: Context, status: SystemStatus, setup: SetupInputs? = null): DiagnosticsSnapshot {
         val app = context.applicationContext as MikaApp
         val phone = PhoneServices.of(app)
-        val inputs = setup ?: status.setupInputs(phone.shellControl.pairingDiscovery.value, phone.pairing.repairing.value)
+        val inputs = setup ?: status.setupInputs(
+            phone.shellControl.pairingDiscovery.value, phone.pairing.repairing.value,
+            rootAvailable = phone.shellManager.root.state.value.suPresent,
+        )
         return DiagnosticsSnapshot(
             generatedAtMs = System.currentTimeMillis(),
             app = DiagnosticsSnapshot.App(BuildConfig.VERSION_NAME, BuildConfig.GIT_HASH, installer(app), language(app)),
@@ -84,6 +91,9 @@ object DiagnosticsCollector {
                 appCopies = appCopies(app, phone),
                 adbKey = adbKey(app),
                 appsAfterTask = com.wangzan101.mika.task.AppsAfterTaskEnd.lastLine,
+                root = phone.shellManager.root.state.value.let { r ->
+                    Diagnostics.rootLine(r.suPresent, r.start, r.startGrant.name, r.commands, r.commandsGrant.name)
+                },
             ),
             recovery = DiagnosticsSnapshot.Recovery(
                 consent = phone.recoverySettings.consent.value,

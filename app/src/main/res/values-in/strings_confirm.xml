@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Mika-root adaptation notice (2026-11-03): adapted from upstream Mika and/or an upstream reviewed PR; see docs/root-fork.md for provenance, attribution, licensing and the no-sole-authorship statement. -->
     <string name="confirm_note">Apa pun yang mengeluarkan uang selalu perlu persetujuan Anda.</string>
     <string name="confirm_pay">Bayar</string>
     <string name="confirm_delete">Hapus</string>
@@ -10,4 +11,6 @@
     <string name="confirm_in_app">Di %1$s</string>
     <string name="confirm_target">Kepada: %1$s</string>
     <string name="confirm_content">Isi: %1$s</string>
+    <string name="confirm_root">Perintah root</string>
+    <string name="confirm_root_where">seluruh ponsel (root)</string>
 </resources>
