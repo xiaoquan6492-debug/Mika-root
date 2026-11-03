@@ -1,6 +1,6 @@
-<!-- translated-from: README.md @ 93a6222e8816 -->
+<!-- translated-from: README.md @ ad9f170f13c8 -->
 > [!IMPORTANT]
-> **Mika-root**는 [Mika](https://github.com/wangzan101/Mika)의 **비공식 ROOT 강화 포크**이며 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)에서 관리합니다. 첫 APK는 **비공식 debug 서명 ROOT 미리 보기**인 [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1)이며 프로덕션 릴리스가 아닙니다. root 기능을 설치하거나 사용하기 전에 [ROOT 포크 안내](../root-fork.md)를 읽어 주세요. 아래 다운로드, 업데이트, 커뮤니티, 기부 링크는 **업스트림 Mika**의 것이며 이 포크의 것이 아닙니다.
+> **Mika-root**는 [Mika](https://github.com/wangzan101/Mika)의 **비공식 ROOT 강화 포크**이며 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)에서 관리합니다. 현재 미리 보기인 [v0.1.34-root.2](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.2)에는 완전하고 디버깅 불가능한 PERF APK 두 개(범용 및 arm64 전용)가 있으며 개발/debug 키로 서명했습니다. 이전 [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) 디버그 미리 보기도 계속 공개되어 있습니다. root 기능을 설치하거나 사용하기 전에 [ROOT 포크 안내](../root-fork.md)를 읽어 주세요. 아래 다운로드, 업데이트, 커뮤니티, 기부 링크는 **업스트림 Mika**의 것이며 이 포크의 것이 아닙니다.
 
 <div align="center">
 

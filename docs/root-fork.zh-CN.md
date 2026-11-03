@@ -1,14 +1,23 @@
 # Mika-root：非官方 ROOT 增强分支
 
-**状态：debug 签名 ROOT 预览。本分支的第一个 Release 是
-[v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1)，不是稳定版或正式生产版。**
+**状态：当前预览为
+[v0.1.34-root.2](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.2)。它包含两个完整、不可调试的 PERF APK，均用开发/调试密钥签名；这不是稳定版或正式生产版。**
 
-英文 README 与五份译文都带有等效的分支/debug 预览提示；本文仍是本分支的权威说明。
+| 选择 | APK | 范围 |
+|---|---|---|
+| 新的 arm64 手机，尤其想要更小 APK | `Mika-root-v0.1.34-root.2-arm64.apk` | 完整 arm64-only APK；arm64 设备支持内置 Linux 沙箱 |
+| 其他/不确定设备，或希望更广的打包 | `Mika-root-v0.1.34-root.2.apk` | 完整通用 APK，含四个 native-library ABI；其 Linux 沙箱仍只支持 arm64 |
+
+只安装**一个** APK，不要成套安装：它们是完整 APK，不是 Android App Bundle 的安装期拆分。较早的
+[v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) debug 预览
+仍保留发布，便于复现。
+
+英文 README 与五份译文都带有等效的分支/预览提示；本文仍是本分支的权威说明。
 
 Mika-root 是 [Mika](https://github.com/wangzan101/Mika) 的**非官方**分支，维护仓库是
 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)。它不隶属于上游作者，也未获上游背书或支持。上游项目、发布下载、更新服务、社区渠道和任何捐赠入口都属于上游 Mika，不属于本分支。
 
-本文说明 ROOT 功能做什么、**不**保护什么、这些代码从哪里来，以及 debug 预览二进制的限制。
+本文说明 ROOT 功能做什么、**不**保护什么、这些代码从哪里来，以及 PERF 预览二进制的限制。
 
 ## 与上游的差异
 
@@ -85,17 +94,20 @@ ROOT 功能不是本分支维护者的单独原创。root-mode 分支及其提�
   不能把定向结果说成全量覆盖。
 - 维护者/用户报告真机验收通过。**没有公开日志、截图、设备标识、凭据或独立见证的测试矩阵。** 这是对维护者/用户
   陈述的转述，不是本仓库独立验证的结论。
-- 没有声称真机安装矩阵、WebView 矩阵或线上模型/API 验证。debug 预览 APK 是开发预览，不是本仓库独立完成的真机验证。
+- 没有声称真机安装矩阵、WebView 矩阵或线上模型/API 验证。PERF 预览 APK 是开发预览，不是本仓库独立完成的真机验证。
 
 ## 安装与签名警告
 
-applicationId 仍是 **`com.wangzan101.mika`**，即上游包名。仓库内的 Gradle 配置没有定义 release 签名身份；
-debug 预览由开发者本机 debug keystore 构建并签名，上游正式版使用不同密钥。其 debug 证书 SHA-256 为
-`1f74e23bf0d2f687afbce1c289b14c17120084ac280ef1ba31de92a179f95d6e`。这是明确的 debuggable 开发预览，
-**不是**生产签名，也**不**构成生产环境安全保证。因此：
+applicationId 仍是 **`com.wangzan101.mika`**，即上游包名。仓库内的 Gradle 配置没有定义 release 签名身份。
+root.2 的 PERF 构建是类 release、**不可调试**且 profileable，但仍用开发者本机开发/调试 keystore 签名；上游正式版
+使用不同密钥。其证书 SHA-256 为
+`1f74e23bf0d2f687afbce1c289b14c17120084ac280ef1ba31de92a179f95d6e`。这**不是**生产签名，也**不**构成生产环境
+安全保证；不要把 debug 密钥签名和 debuggable 构建混为一谈。因此：
 
-- 同包名的 debug 构建不能和官方 App 并排安装；
+- 这些构建和官方 App 不能并排安装；
 - 用另一把密钥签名的构建不能覆盖官方 App；为解决签名不匹配而卸载，可能丢失 App 数据；
+- 先前的 root.1 debug 预览使用同一开发密钥，应用版本仍是 35，因此在已安装 root.1 的设备上可更新到 root.2；
+  不承诺从官方签名迁移；
 - 从上游继承的「关于 › 检查更新」仍访问**上游** `wangzan101/Mika` 的 Release API，不是本分支。分支预览请手动
   使用本分支 Releases，不能假定上游会提供兼容本分支的构建。
 
@@ -125,7 +137,7 @@ debug 预览由开发者本机 debug keystore 构建并签名，上游正式版�
 `SOURCES.txt`/`SOURCE-EXTRA.tsv` 索引；完整 27 个 crate 的 Cargo.lock 依赖闭包及许可证和 `make-vendor.py`；以及保留的
 许可证/声明文本。已校验的完整包分成三个有序分片，位于
 [`third_party/corresponding-sources/0.1.34/`](../third_party/corresponding-sources/0.1.34/README.md)。
-**这些分片与哈希都包含在本源码树中。** 取得本 checkout 后，请按该目录的 README 拼接并校验完整包。debug 预览
+**这些分片与哈希都包含在本源码树中。** 取得本 checkout 后，请按该目录的 README 拼接并校验完整包。当前 PERF 预览
 发布页应携带同一重建后的完整包。本源码树本身不包含 APK。本文**不**声称经过独立见证的公开托管或法律保证。
 这里不虚构源码提供联系人。
 

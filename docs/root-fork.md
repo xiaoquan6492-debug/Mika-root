@@ -1,8 +1,17 @@
 # Mika-root: unofficial ROOT-enhanced fork
 
-**Status: debug-signed ROOT preview. The first fork release is [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1); it is not a stable or production release.**
+**Status: current preview [v0.1.34-root.2](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.2). It has two complete, non-debuggable PERF APKs signed with the development/debug key; this is not a stable or production release.**
 
-The English README and all five translated READMEs carry an equivalent fork/debug-preview banner. This
+| Choose | APK | Scope |
+|---|---|---|
+| Most modern arm64 phones, especially if you want the smaller APK | `Mika-root-v0.1.34-root.2-arm64.apk` | Complete arm64-only APK; supports the bundled Linux sandbox on arm64 |
+| Other/uncertain devices or when a broad bundle is preferred | `Mika-root-v0.1.34-root.2.apk` | Complete universal APK with four native-library ABIs; its Linux sandbox is still arm64-only |
+
+Install **one** APK, not both as a set: these are complete APKs, not Android App Bundle install-time splits. The
+earlier [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) debug
+preview remains published for reproducibility.
+
+The English README and all five translated READMEs carry an equivalent fork/preview banner. This
 document remains the fork-specific source of truth.
 
 Mika-root is an **unofficial** fork of [Mika](https://github.com/wangzan101/Mika), maintained at
@@ -11,7 +20,7 @@ endorsed by, or supported by the upstream Mika author. The upstream project, its
 service, community channels and any donation links belong to upstream Mika, not to this fork.
 
 This document explains what the ROOT features do, what they do **not** protect, how the fork was assembled,
-and the limits of the debug preview binary.
+and the limits of the PERF preview binaries.
 
 ## What is different
 
@@ -110,20 +119,22 @@ Available local evidence is limited:
 - The maintainer/user reports that real-device acceptance passed. **No public logs, screenshots, device
   identifiers, credentials, or independently witnessed test matrix are attached.** That statement is attributed
   to the maintainer/user, not to an independent verification performed by this repository.
-- No real-device install matrix, WebView matrix, or live model/API validation is claimed. The debug preview APK is a development preview, not independently device-tested by this repository.
+- No real-device install matrix, WebView matrix, or live model/API validation is claimed. The PERF preview APKs are development previews, not independently device-tested by this repository.
 
 ## Installation and signing warning
 
 The application ID is still **`com.wangzan101.mika`**, the upstream package ID. The checked-in Gradle
-configuration does not define a release signing identity; the debug preview is built and signed with the
-developer's local debug keystore, while an official upstream release is signed with a different key. Its
-debug certificate SHA-256 is
-`1f74e23bf0d2f687afbce1c289b14c17120084ac280ef1ba31de92a179f95d6e`. This is an explicitly debuggable
-development preview, **not** production signing and **not** a production-security assurance. Consequently:
+configuration does not define a release signing identity. The root.2 PERF builds are release-like,
+**non-debuggable**, and profileable, but they are signed with the developer's local development/debug keystore;
+an official upstream release is signed with a different key. Their certificate SHA-256 is
+`1f74e23bf0d2f687afbce1c289b14c17120084ac280ef1ba31de92a179f95d6e`. This is **not** production signing and
+**not** a production-security assurance; do not confuse debug-key signing with a debuggable build. Consequently:
 
-- a debug build and the official app cannot be installed side by side under the same package ID;
+- these builds and the official app cannot be installed side by side under the same package ID;
 - a build signed with another key cannot update the official app, and uninstalling to "fix" a signature mismatch
   can destroy app data;
+- the previous root.1 debug preview used the same development key and the app version remains 35, so it can
+  update root.1 on devices where root.1 is installed; no update path is promised from official signatures;
 - the inherited About › Check for updates path still points at the **upstream** `wangzan101/Mika` release API,
   not this fork. Use this fork's Releases manually for fork previews and do not assume that upstream offers a
   compatible fork build.
@@ -161,15 +172,15 @@ dependency closure with licenses and `make-vendor.py`; and preserved license/not
 is split into three ordered parts under
 [`third_party/corresponding-sources/0.1.34/`](../third_party/corresponding-sources/0.1.34/README.md).
 **These parts and hashes are included in this source tree.** After obtaining this checkout, reconstruct and
-verify the full archive using that README. The debug preview release page must carry the same reconstructed
+verify the full archive using that README. The current PERF preview release page must carry the same reconstructed
 archive. This source tree contains no APK. This document does **not** claim independently witnessed public
 hosting or a legal guarantee. No source-offer contact is invented here.
 
 ## Upstream, community and donations
 
 Use upstream Mika for its official releases, update service, issue tracker, community channels and any donation
-mechanism. The fork's separate distribution is limited to the manual debug ROOT preview named above; it is not
-a stable release program. This fork does not run a separate donation or community program. The upstream links
+mechanism. The fork's separate distribution is limited to the manual PERF ROOT previews named above; they are
+not a stable release program. This fork does not run a separate donation or community program. The upstream links
 are kept in the README for attribution and convenience; they do **not** imply that this fork's code is the
 upstream project or that donations go to this fork.
 

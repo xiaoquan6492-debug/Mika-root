@@ -1,9 +1,9 @@
 # Mika-root 0.1.34 corresponding sources
 
 These are **source archives, not APKs**. They are the corresponding-source set for the native/runtime assets
-checked into this repository. The source tree itself contains no APK. The debug preview release
-[v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) should carry the
-APK and the full archive reconstructed from these parts.
+checked into this repository. The source tree itself contains no APK. The current PERF preview release
+[v0.1.34-root.2](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.2) should carry the
+two complete APKs and the full archive reconstructed from these parts.
 
 The full archive is split only to stay below Git file-size limits. Concatenate all parts in filename order to
 reconstruct exactly:
@@ -57,7 +57,7 @@ recipe, Cargo build script, proc macro, or crate code was executed. See the repo
 [`NOTICE`](../../../NOTICE), and [`licenses/THIRD_PARTY_NOTICES.md`](../../../licenses/THIRD_PARTY_NOTICES.md).
 
 These parts and hashes are included in this source checkout. After obtaining this checkout, reconstruct and
-verify the full archive as documented above. The named debug preview release should attach that reconstructed
+verify the full archive as documented above. The current PERF preview release should attach that reconstructed
 archive; this directory itself is not an APK or legal-compliance guarantee. Fork-specific ROOT bugs belong in
 this fork's Issues, not in an upstream Mika support obligation; official upstream releases and community remain
 upstream.

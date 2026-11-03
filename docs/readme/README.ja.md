@@ -1,6 +1,6 @@
-<!-- translated-from: README.md @ 93a6222e8816 -->
+<!-- translated-from: README.md @ ad9f170f13c8 -->
 > [!IMPORTANT]
-> **Mika-root** は [Mika](https://github.com/wangzan101/Mika) の**非公式 ROOT 強化フォーク**で、[xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root) で管理されています。最初の APK は**非公式の debug 署名付き ROOT プレビュー** [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) で、実運用リリースではありません。root 機能をインストールまたは使用する前に [ROOT フォークの説明](../root-fork.md) をお読みください。以下のダウンロード、更新、コミュニティ、寄付のリンクは**上流の Mika** のもので、本フォークのものではありません。
+> **Mika-root** は [Mika](https://github.com/wangzan101/Mika) の**非公式 ROOT 強化フォーク**で、[xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root) で管理されています。現在のプレビュー [v0.1.34-root.2](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.2) には、完全で非デバッグの PERF APK（universal と arm64 専用）が 2 つあり、開発/debug 鍵で署名されています。以前の [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) debug プレビューも公開されています。root 機能をインストールまたは使用する前に [ROOT フォークの説明](../root-fork.md) をお読みください。以下のダウンロード、更新、コミュニティ、寄付のリンクは**上流の Mika** のもので、本フォークのものではありません。
 
 <div align="center">
 

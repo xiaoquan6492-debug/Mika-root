@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> **Mika-root** is an **unofficial ROOT-enhanced fork** of [Mika](https://github.com/wangzan101/Mika), maintained at [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root). Its first APK is an **unofficial debug-signed ROOT preview**, [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1), not a production release. Read the [ROOT fork notes](docs/root-fork.md) before installing or using root features. Download, update, community and donation links below still belong to **upstream Mika**, not this fork.
+> **Mika-root** is an **unofficial ROOT-enhanced fork** of [Mika](https://github.com/wangzan101/Mika), maintained at [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root). Current preview [v0.1.34-root.2](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.2) has two complete, non-debuggable PERF APKs (universal and arm64-only), signed with the development/debug key; the earlier [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) debug preview remains published. Read the [ROOT fork notes](docs/root-fork.md) before installing or using root features. Download, update, community and donation links below still belong to **upstream Mika**, not this fork.
 
 <div align="center">
 

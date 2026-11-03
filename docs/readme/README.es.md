@@ -1,6 +1,6 @@
-<!-- translated-from: README.md @ 93a6222e8816 -->
+<!-- translated-from: README.md @ ad9f170f13c8 -->
 > [!IMPORTANT]
-> **Mika-root** es un **fork no oficial de Mika con ROOT mejorado**, mantenido en [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root). Su primer APK es una **vista previa ROOT no oficial firmada en debug**, [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1), no un release de producción. Antes de instalar o usar funciones root, lee las [notas del fork ROOT](../root-fork.md). Los enlaces de descarga, actualización, comunidad y donación de abajo pertenecen a **Mika upstream**, no a este fork.
+> **Mika-root** es un **fork no oficial de Mika con ROOT mejorado**, mantenido en [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root). La vista previa actual [v0.1.34-root.2](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.2) tiene dos APK PERF completos y no depurables (universal y solo arm64), firmados con la clave de desarrollo/debug; la anterior vista previa debug [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) sigue publicada. Antes de instalar o usar funciones root, lee las [notas del fork ROOT](../root-fork.md). Los enlaces de descarga, actualización, comunidad y donación de abajo pertenecen a **Mika upstream**, no a este fork.
 
 <div align="center">
 

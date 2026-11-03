@@ -1,6 +1,6 @@
-<!-- translated-from: README.md @ 93a6222e8816 -->
+<!-- translated-from: README.md @ ad9f170f13c8 -->
 > [!IMPORTANT]
-> **Mika-root** 是 [Mika](https://github.com/wangzan101/Mika) 的**非官方 ROOT 增强分支**，维护仓库为 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)。它的第一个 APK 是**非官方 debug 签名 ROOT 预览**，[v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1)，不是正式生产版。安装或使用 root 功能前，请阅读 [ROOT 分支说明](../root-fork.zh-CN.md)。下方的下载、更新、社区与捐赠链接仍属于**上游 Mika**，不属于本分支。
+> **Mika-root** 是 [Mika](https://github.com/wangzan101/Mika) 的**非官方 ROOT 增强分支**，维护仓库为 [xiaoquan6492-debug/Mika-root](https://github.com/xiaoquan6492-debug/Mika-root)。当前预览 [v0.1.34-root.2](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.2) 有两个完整、不可调试的 PERF APK（通用版和 arm64 专用版），均用开发/调试密钥签名；较早的 [v0.1.34-root.1](https://github.com/xiaoquan6492-debug/Mika-root/releases/tag/v0.1.34-root.1) debug 预览仍保留发布。安装或使用 root 功能前，请阅读 [ROOT 分支说明](../root-fork.zh-CN.md)。下方的下载、更新、社区与捐赠链接仍属于**上游 Mika**，不属于本分支。
 
 <div align="center">
 
